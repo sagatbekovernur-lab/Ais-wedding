@@ -1,1 +1,650 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Болат & Аселя — 29.08.2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #faf3ed 0%, #f5e6d3 100%);
+            color: #5a1a2e;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
+        /* ===== ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКОВ ===== */
+        .lang-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            padding: 8px 16px;
+            border: 2px solid #8B1E3F;
+            background: white;
+            color: #8B1E3F;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .lang-btn.active {
+            background: #8B1E3F;
+            color: white;
+        }
+
+        /* ===== КОНВЕРТ ===== */
+        .envelope-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #8B1E3F 0%, #5a1a2e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 1s, visibility 1s;
+        }
+        .envelope-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .envelope {
+            width: 320px;
+            height: 220px;
+            position: relative;
+            cursor: pointer;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .envelope-body {
+            width: 100%; height: 100%;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .envelope-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 50%;
+            background: #f5e6d3;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            transform-origin: top;
+            transition: transform 0.8s;
+            z-index: 3;
+        }
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+        }
+        .seal {
+            width: 80px; height: 80px;
+            background: radial-gradient(circle at 30% 30%, #b8324f, #8B1E3F);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-family: 'Great Vibes', cursive;
+            font-size: 28px;
+            box-shadow: 0 5px 20px rgba(139, 30, 63, 0.6), inset 0 -3px 8px rgba(0,0,0,0.2);
+            z-index: 4;
+            position: relative;
+        }
+        .click-hint {
+            margin-top: 30px;
+            color: #fff;
+            font-size: 18px;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* ===== ОСНОВНОЙ КОНТЕНТ ===== */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 30, 63, 0.1);
+        }
+        .hero .names {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(48px, 10vw, 90px);
+            color: #8B1E3F;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        .hero .date {
+            font-size: clamp(24px, 5vw, 36px);
+            color: #D4AF37;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+        .hero .subtitle {
+            font-size: clamp(18px, 3vw, 24px);
+            color: #5a1a2e;
+            font-style: italic;
+        }
+
+        /* Таймер */
+        .countdown-section {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 30px;
+            margin-bottom: 40px;
+        }
+        .countdown-section h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(32px, 6vw, 48px);
+            color: #8B1E3F;
+            margin-bottom: 30px;
+        }
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .time-box {
+            background: linear-gradient(135deg, #8B1E3F, #b8324f);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            min-width: 90px;
+            box-shadow: 0 10px 25px rgba(139, 30, 63, 0.3);
+        }
+        .time-box span {
+            display: block;
+            font-size: 42px;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+        .time-box p {
+            font-size: 14px;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* Секции */
+        section {
+            background: rgba(255,255,255,0.7);
+            border-radius: 30px;
+            padding: 50px 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+        section h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(36px, 7vw, 56px);
+            color: #8B1E3F;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Детали */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        .detail-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(139, 30, 63, 0.1);
+            border: 1px solid rgba(139, 30, 63, 0.1);
+        }
+        .detail-card h3 {
+            font-size: 24px;
+            color: #8B1E3F;
+            margin-bottom: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+        .detail-card p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .map-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 30px;
+            background: #8B1E3F;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        .map-btn:hover {
+            background: #b8324f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 30, 63, 0.4);
+        }
+
+        /* Палитра цветов */
+        .color-palette {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .color {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            border: 3px solid white;
+        }
+
+        /* Программа */
+        .timeline {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #8B1E3F, #D4AF37);
+        }
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        .timeline-item .time {
+            background: #8B1E3F;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            width: 45%;
+            text-align: center;
+        }
+        .timeline-item .event {
+            width: 45%;
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+        }
+        .timeline-item::after {
+            content: '♥';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #D4AF37;
+            font-size: 24px;
+            background: white;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        /* RSVP форма */
+        .rsvp form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .rsvp input, .rsvp select {
+            padding: 15px 20px;
+            border: 2px solid rgba(139, 30, 63, 0.2);
+            border-radius: 15px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            background: white;
+            transition: border 0.3s;
+        }
+        .rsvp input:focus, .rsvp select:focus {
+            outline: none;
+            border-color: #8B1E3F;
+        }
+        .rsvp button {
+            padding: 18px;
+            background: linear-gradient(135deg, #8B1E3F, #b8324f);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+        }
+        .rsvp button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 30, 63, 0.4);
+        }
+        #formMessage {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #8B1E3F;
+        }
+
+        /* Футер */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #8B1E3F;
+        }
+        footer .heart {
+            font-size: 40px;
+            color: #8B1E3F;
+            animation: heartbeat 1.5s infinite;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        footer p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 600px) {
+            .timeline::before { left: 20px; }
+            .timeline-item, .timeline-item:nth-child(even) {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 50px;
+            }
+            .timeline-item .time, .timeline-item .event {
+                width: 100%;
+                text-align: left;
+            }
+            .timeline-item::after {
+                left: 20px;
+            }
+            .lang-switcher {
+                top: 10px; right: 10px;
+            }
+            .lang-btn {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Переключатель языков -->
+<div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn" onclick="setLang('kk')">KZ</button>
+</div>
+
+<!-- Экран с конвертом -->
+<div class="envelope-screen" id="envelopeScreen">
+    <div>
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body">
+                <div class="seal">Б&А</div>
+            </div>
+        </div>
+        <p class="click-hint" data-ru="Нажмите, чтобы открыть" data-kk="Ашу үшін басыңыз">Нажмите, чтобы открыть</p>
+    </div>
+</div>
+
+<!-- Основной контент -->
+<div class="main-content" id="mainContent" style="display:none;">
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1 class="names">Болат & Аселя</h1>
+        <p class="date">29 · 08 · 2026</p>
+        <p class="subtitle" data-ru="Приглашаем вас разделить радость нашего особенного дня" data-kk="Ерекше күніміздің қуанышын бірге бөлісуге шақырамыз">Приглашаем вас разделить радость нашего особенного дня</p>
+    </section>
+
+    <!-- Таймер -->
+    <section class="countdown-section">
+        <h2 data-ru="До нашей свадьбы осталось" data-kk="Үйлену тойына дейін">До нашей свадьбы осталось</h2>
+        <div class="countdown">
+            <div class="time-box"><span id="days">0</span><p data-ru="дней" data-kk="күн">дней</p></div>
+            <div class="time-box"><span id="hours">0</span><p data-ru="часов" data-kk="сағат">часов</p></div>
+            <div class="time-box"><span id="minutes">0</span><p data-ru="минут" data-kk="минут">минут</p></div>
+            <div class="time-box"><span id="seconds">0</span><p data-ru="секунд" data-kk="секунд">секунд</p></div>
+        </div>
+    </section>
+
+    <!-- Детали -->
+    <section>
+        <h2 data-ru="Детали торжества" data-kk="Тойдың мәліметтері">Детали торжества</h2>
+        <div class="details-grid">
+            <div class="detail-card">
+                <h3 data-ru="📅 Когда" data-kk="📅 Қашан">📅 Когда</h3>
+                <p data-ru="29 августа 2026" data-kk="29 тамыз 2026">29 августа 2026</p>
+                <p data-ru="Начало в 17:00" data-kk="17:00-де басталады">Начало в 17:00</p>
+            </div>
+            <div class="detail-card">
+                <h3 data-ru="📍 Где" data-kk="📍 Қайда">📍 Где</h3>
+                <p data-ru="Ресторан «ULUU TOO PREMIUM»" data-kk="«ULUU TOO PREMIUM» мейрамханасы">Ресторан «ULUU TOO PREMIUM»</p>
+                <p data-ru="г. Бишкек, пр. Ленина 185/1" data-kk="Бишкек қ., Ленин даңғылы 185/1">г. Бишкек, пр. Ленина 185/1</p>
+                <a href="https://2gis.ru/bishkek" target="_blank" class="map-btn" data-ru="Открыть карту" data-kk="Картадан көру">Открыть карту</a>
+            </div>
+            <div class="detail-card">
+                <h3 data-ru="👗 Дресс-код" data-kk="👗 Киім коды">👗 Дресс-код</h3>
+                <p data-ru="Вечерний наряд в тонах:" data-kk="Кешкі киім түстерде:">Вечерний наряд в тонах:</p>
+                <div class="color-palette">
+                    <div class="color" style="background: #8B1E3F;"></div>
+                    <div class="color" style="background: #F5E6D3;"></div>
+                    <div class="color" style="background: #D4AF37;"></div>
+                    <div class="color" style="background: #4A6741;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Программа -->
+    <section>
+        <h2 data-ru="Программа вечера" data-kk="Кештің бағдарламасы">Программа вечера</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="time">17:00</div>
+                <div class="event" data-ru="Сбор гостей" data-kk="Қонақтарды жинау">Сбор гостей</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time">17:30</div>
+                <div class="event" data-ru="Торжественная церемония" data-kk="Салтанатты рәсім">Торжественная церемония</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time">18:30</div>
+                <div class="event" data-ru="Фуршет и фотосессия" data-kk="Фуршет және фотосессия">Фуршет и фотосессия</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time">19:00</div>
+                <div class="event" data-ru="Банкет и развлечения" data-kk="Банкет және ойын-сауық">Банкет и развлечения</div>
+            </div>
+            <div class="timeline-item">
+                <div class="time">23:00</div>
+                <div class="event" data-ru="Завершение вечера" data-kk="Кештің аяқталуы">Завершение вечера</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP -->
+    <section class="rsvp">
+        <h2 data-ru="Подтвердите присутствие" data-kk="Қатысуды растаңыз">Подтвердите присутствие</h2>
+        <form id="rsvpForm" onsubmit="submitRSVP(event)">
+            <input type="text" id="guestName" placeholder="Ваше имя / Сіздің атыңыз" required>
+            <select id="attendance" required>
+                <option value="" data-ru="Выберите..." data-kk="Таңдаңыз...">Выберите...</option>
+                <option value="yes" data-ru="Да, приду! 🎉" data-kk="Иә, келемін! 🎉">Да, приду! 🎉</option>
+                <option value="no" data-ru="К сожалению, не смогу 😢" data-kk="Кешіріңіз, келе алмаймын 😢">К сожалению, не смогу 😢</option>
+            </select>
+            <input type="number" id="guestCount" placeholder="Количество гостей / Қонақ саны" min="1" max="10">
+            <button type="submit" data-ru="Отправить" data-kk="Жіберу">Отправить</button>
+        </form>
+        <p id="formMessage"></p>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="heart">♥</div>
+        <p data-ru="С любовью, Болат & Аселя" data-kk="Махаббатпен, Болат & Аселя">С любовью, Болат & Аселя</p>
+        <p>29.08.2026</p>
+    </footer>
+
+</div>
+
+<script>
+    // ===== ДАТА СВАДЬБЫ =====
+    const WEDDING_DATE = new Date('2026-08-29T17:00:00').getTime();
+
+    // ===== ОТКРЫТИЕ КОНВЕРТА =====
+    function openEnvelope() {
+        const envelope = document.getElementById('envelope');
+        envelope.classList.add('open');
+        
+        setTimeout(() => {
+            document.getElementById('envelopeScreen').classList.add('hidden');
+            document.getElementById('mainContent').style.display = 'block';
+            startCountdown();
+        }, 1000);
+    }
+
+    // ===== ТАЙМЕР =====
+    function startCountdown() {
+        function update() {
+            const now = Date.now();
+            const diff = WEDDING_DATE - now;
+            
+            if (diff <= 0) {
+                document.getElementById('days').textContent = '0';
+                document.getElementById('hours').textContent = '0';
+                document.getElementById('minutes').textContent = '0';
+                document.getElementById('seconds').textContent = '0';
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+        
+        update();
+        setInterval(update, 1000);
+    }
+
+    // ===== ПЕРЕКЛЮЧЕНИЕ ЯЗЫКОВ =====
+    let currentLang = 'ru';
+    
+    function setLang(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang;
+        
+        // Обновляем кнопки
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent.toLowerCase().includes(lang)) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Обновляем все тексты с data-ru и data-kk
+        document.querySelectorAll('[data-ru][data-kk]').forEach(el => {
+            el.textContent = el.getAttribute('data-' + lang);
+        });
+        
+        // Обновляем placeholder у input
+        document.querySelectorAll('input[placeholder]').forEach(el => {
+            const text = el.getAttribute('placeholder');
+            if (text.includes('/')) {
+                const parts = text.split('/');
+                el.placeholder = lang === 'ru' ? parts[0].trim() : parts[1].trim();
+            }
+        });
+    }
+
+    // ===== ОТПРАВКА RSVP =====
+    function submitRSVP(e) {
+        e.preventDefault();
+        const name = document.getElementById('guestName').value;
+        const attendance = document.getElementById('attendance').value;
+        const count = document.getElementById('guestCount').value;
+        
+        // Здесь можно подключить Formspree или Telegram бот
+        // Пока просто показываем сообщение
+        const msg = currentLang === 'ru' 
+            ? `Спасибо, ${name}! Ваш ответ принят.` 
+            : `Рақмет, ${name}! Сіздің жауабыңыз қабылданды.`;
+        
+        document.getElementById('formMessage').textContent = msg;
+        document.getElementById('rsvpForm').reset();
+        
+        // Для реальной отправки раскомментируйте:
+        // sendToTelegram(name, attendance, count);
+    }
+
+    // ===== ОТПРАВКА В TELEGRAM (опционально) =====
+    /*
+    function sendToTelegram(name, attendance, count) {
+        const BOT_TOKEN = 'ВАШ_ТОКЕН_БОТА';
+        const CHAT_ID = 'ВАШ_CHAT_ID';
+        const text = `🎉 Новая заявка!\n ${name}\n✅ ${attendance}\n👥 ${count}`;
+        
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({chat_id: CHAT_ID, text: text})
+        });
+    }
+    */
+</script>
+
+</body>
+</html>
