@@ -513,16 +513,17 @@
     <!-- RSVP -->
     <section class="rsvp">
         <h2 data-ru="Подтвердите присутствие" data-kk="Қатысуды растаңыз">Подтвердите присутствие</h2>
-        <form id="rsvpForm" onsubmit="submitRSVP(event)">
-            <input type="text" id="guestName" placeholder="Ваше имя / Сіздің атыңыз" required>
-            <select id="attendance" required>
-                <option value="" data-ru="Выберите..." data-kk="Таңдаңыз...">Выберите...</option>
-                <option value="yes" data-ru="Да, приду! 🎉" data-kk="Иә, келемін! 🎉">Да, приду! 🎉</option>
-                <option value="no" data-ru="К сожалению, не смогу 😢" data-kk="Кешіріңіз, келе алмаймын 😢">К сожалению, не смогу 😢</option>
-            </select>
-            <input type="number" id="guestCount" placeholder="Количество гостей / Қонақ саны" min="1" max="10">
-            <button type="submit" data-ru="Отправить" data-kk="Жіберу">Отправить</button>
-        </form>
+        <div style="text-align: center;">
+    <p style="font-size: 18px; margin-bottom: 20px;" data-ru="Нажмите кнопку, чтобы подтвердить присутствие" data-kk="Қатысуды растау үшін батырманы басыңыз">
+        Нажмите кнопку, чтобы подтвердить присутствие
+    </p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSebGS0USfKCAKA7y5A1vof6yky2yZGgvUBG2HUL85pRAfHdwg/viewform?usp=header" target="_blank" class="map-btn" style="font-size: 20px; padding: 15px 40px;">
+        <span data-ru="Подтвердить присутствие" data-kk="Қатысуды растау">Подтвердить присутствие</span> 📝
+    </a>
+    <p style="font-size: 14px; margin-top: 15px; opacity: 0.7;" data-ru="Откроется в новой вкладке" data-kk="Жаңа қойындыда ашылады">
+        Откроется в новой вкладке
+    </p>
+</div>
         <p id="formMessage"></p>
     </section>
 
