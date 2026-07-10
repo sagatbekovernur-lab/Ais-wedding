@@ -324,48 +324,40 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
-        /* RSVP форма */
-        .rsvp form {
-            max-width: 500px;
+        /* RSVP секция */
+        .rsvp-container {
+            text-align: center;
+            max-width: 600px;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
         }
-        .rsvp input, .rsvp select {
-            padding: 15px 20px;
-            border: 2px solid rgba(139, 30, 63, 0.2);
-            border-radius: 15px;
-            font-family: 'Cormorant Garamond', serif;
+        .rsvp-text {
             font-size: 18px;
-            background: white;
-            transition: border 0.3s;
+            margin-bottom: 25px;
+            color: #5a1a2e;
+            line-height: 1.6;
         }
-        .rsvp input:focus, .rsvp select:focus {
-            outline: none;
-            border-color: #8B1E3F;
-        }
-        .rsvp button {
-            padding: 18px;
+        .rsvp-button {
+            display: inline-block;
+            padding: 18px 50px;
             background: linear-gradient(135deg, #8B1E3F, #b8324f);
             color: white;
-            border: none;
-            border-radius: 15px;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 20px;
-            cursor: pointer;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 22px;
+            font-weight: 600;
             transition: all 0.3s;
-            letter-spacing: 2px;
+            box-shadow: 0 10px 25px rgba(139, 30, 63, 0.3);
+            letter-spacing: 1px;
         }
-        .rsvp button:hover {
+        .rsvp-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(139, 30, 63, 0.4);
+            box-shadow: 0 15px 35px rgba(139, 30, 63, 0.5);
         }
-        #formMessage {
-            text-align: center;
+        .rsvp-hint {
+            font-size: 14px;
             margin-top: 20px;
-            font-size: 18px;
-            color: #8B1E3F;
+            opacity: 0.7;
+            color: #5a1a2e;
         }
 
         /* Футер */
@@ -409,6 +401,10 @@
             .lang-btn {
                 padding: 6px 12px;
                 font-size: 14px;
+            }
+            .rsvp-button {
+                padding: 15px 35px;
+                font-size: 18px;
             }
         }
     </style>
@@ -510,21 +506,20 @@
         </div>
     </section>
 
-    <!-- RSVP -->
+    <!-- RSVP с Google Forms -->
     <section class="rsvp">
         <h2 data-ru="Подтвердите присутствие" data-kk="Қатысуды растаңыз">Подтвердите присутствие</h2>
-        <div style="text-align: center;">
-    <p style="font-size: 18px; margin-bottom: 20px;" data-ru="Нажмите кнопку, чтобы подтвердить присутствие" data-kk="Қатысуды растау үшін батырманы басыңыз">
-        Нажмите кнопку, чтобы подтвердить присутствие
-    </p>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSebGS0USfKCAKA7y5A1vof6yky2yZGgvUBG2HUL85pRAfHdwg/viewform?usp=header" target="_blank" class="map-btn" style="font-size: 20px; padding: 15px 40px;">
-        <span data-ru="Подтвердить присутствие" data-kk="Қатысуды растау">Подтвердить присутствие</span> 📝
-    </a>
-    <p style="font-size: 14px; margin-top: 15px; opacity: 0.7;" data-ru="Откроется в новой вкладке" data-kk="Жаңа қойындыда ашылады">
-        Откроется в новой вкладке
-    </p>
-</div>
-        <p id="formMessage"></p>
+        <div class="rsvp-container">
+            <p class="rsvp-text" data-ru="Пожалуйста, подтвердите ваше присутствие, заполнив короткую форму. Это поможет нам лучше подготовиться к нашему особенному дню." data-kk="Қатысуыңызды растаңыз, қысқа форманы толтырыңыз. Бұл бізге ерекше күнімізге жақсырақ дайындалуға көмектеседі.">
+                Пожалуйста, подтвердите ваше присутствие, заполнив короткую форму. Это поможет нам лучше подготовиться к нашему особенному дню.
+            </p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSebGS0USfKCAKA7y5A1vof6yky2yZGgvUBG2HUL85pRAfHdwg/viewform?usp=header" target="_blank" class="rsvp-button">
+                <span data-ru="Подтвердить присутствие" data-kk="Қатысуды растау">Подтвердить присутствие</span> 📝
+            </a>
+            <p class="rsvp-hint" data-ru="Форма откроется в новой вкладке" data-kk="Форма жаңа қойындыда ашылады">
+                Форма откроется в новой вкладке
+            </p>
+        </div>
     </section>
 
     <!-- Футер -->
@@ -600,72 +595,7 @@
         document.querySelectorAll('[data-ru][data-kk]').forEach(el => {
             el.textContent = el.getAttribute('data-' + lang);
         });
-        
-        // Обновляем placeholder у input
-        document.querySelectorAll('input[placeholder]').forEach(el => {
-            const text = el.getAttribute('placeholder');
-            if (text.includes('/')) {
-                const parts = text.split('/');
-                el.placeholder = lang === 'ru' ? parts[0].trim() : parts[1].trim();
-            }
-        });
     }
-
-    // ===== ОТПРАВКА RSVP =====
-    function submitRSVP(e) {
-    e.preventDefault();
-    
-    const name = document.getElementById('guestName').value;
-    const attendance = document.getElementById('attendance').value;
-    const count = document.getElementById('guestCount').value;
-    
-    // ВАШИ ДАННЫЕ - ЗАМЕНИТЕ!
-    const BOT_TOKEN = '6456456456'; // ← Ваш токен
-    const CHAT_ID = ' 45645645'; // ← Ваш Chat ID
-    
-    // Формируем сообщение
-    const attendanceText = attendance === 'yes' 
-        ? (currentLang === 'ru' ? '✅ Придёт' : '✅ Келеді')
-        : (currentLang === 'ru' ? '❌ Не придёт' : '❌ Келмейді');
-    
-    const message = `🎉 *Новая заявка на свадьбу!*\n\n` +
-                    `👤 *Имя:* ${name}\n` +
-                    `${attendanceText}\n` +
-                    `👥 *Количество гостей:* ${count || 1}\n` +
-                    `📅 *Дата:* ${new Date().toLocaleString('ru-RU')}`;
-    
-    // Отправляем в Telegram
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            chat_id: CHAT_ID,
-            text: message,
-            parse_mode: 'Markdown'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.ok) {
-            const msg = currentLang === 'ru' 
-                ? `Спасибо, ${name}! Ваш ответ принят.` 
-                : `Рақмет, ${name}! Сіздің жауабыңыз қабылданды.`;
-            document.getElementById('formMessage').textContent = msg;
-            document.getElementById('rsvpForm').reset();
-        } else {
-            throw new Error('Ошибка отправки');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        const msg = currentLang === 'ru' 
-            ? `Ошибка. Попробуйте ещё раз.` 
-            : `Қате. Қайта көріңіз.`;
-        document.getElementById('formMessage').textContent = msg;
-    });
-}
 </script>
 
 </body>
