@@ -612,38 +612,59 @@
 
     // ===== ОТПРАВКА RSVP =====
     function submitRSVP(e) {
-        e.preventDefault();
-        const name = document.getElementById('guestName').value;
-        const attendance = document.getElementById('attendance').value;
-        const count = document.getElementById('guestCount').value;
-        
-        // Здесь можно подключить Formspree или Telegram бот
-        // Пока просто показываем сообщение
+    e.preventDefault();
+    
+    const name = document.getElementById('guestName').value;
+    const attendance = document.getElementById('attendance').value;
+    const count = document.getElementById('guestCount').value;
+    
+    // ВАШИ ДАННЫЕ - ЗАМЕНИТЕ!
+    const BOT_TOKEN = '8902804685:AAEfpFNUGT7G7D53ui38pGNa6E0Od2Kixac'; // ← Ваш токен
+    const CHAT_ID = ' 1297868361'; // ← Ваш Chat ID
+    
+    // Формируем сообщение
+    const attendanceText = attendance === 'yes' 
+        ? (currentLang === 'ru' ? '✅ Придёт' : '✅ Келеді')
+        : (currentLang === 'ru' ? '❌ Не придёт' : '❌ Келмейді');
+    
+    const message = `🎉 *Новая заявка на свадьбу!*\n\n` +
+                    `👤 *Имя:* ${name}\n` +
+                    `${attendanceText}\n` +
+                    `👥 *Количество гостей:* ${count || 1}\n` +
+                    `📅 *Дата:* ${new Date().toLocaleString('ru-RU')}`;
+    
+    // Отправляем в Telegram
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: message,
+            parse_mode: 'Markdown'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.ok) {
+            const msg = currentLang === 'ru' 
+                ? `Спасибо, ${name}! Ваш ответ принят.` 
+                : `Рақмет, ${name}! Сіздің жауабыңыз қабылданды.`;
+            document.getElementById('formMessage').textContent = msg;
+            document.getElementById('rsvpForm').reset();
+        } else {
+            throw new Error('Ошибка отправки');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
         const msg = currentLang === 'ru' 
-            ? `Спасибо, ${name}! Ваш ответ принят.` 
-            : `Рақмет, ${name}! Сіздің жауабыңыз қабылданды.`;
-        
+            ? `Ошибка. Попробуйте ещё раз.` 
+            : `Қате. Қайта көріңіз.`;
         document.getElementById('formMessage').textContent = msg;
-        document.getElementById('rsvpForm').reset();
-        
-        // Для реальной отправки раскомментируйте:
-        // sendToTelegram(name, attendance, count);
-    }
-
-    // ===== ОТПРАВКА В TELEGRAM (опционально) =====
-    /*
-    function sendToTelegram(name, attendance, count) {
-        const BOT_TOKEN = 'ВАШ_ТОКЕН_БОТА';
-        const CHAT_ID = 'ВАШ_CHAT_ID';
-        const text = `🎉 Новая заявка!\n ${name}\n✅ ${attendance}\n👥 ${count}`;
-        
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({chat_id: CHAT_ID, text: text})
-        });
-    }
-    */
+    });
+}
 </script>
 
 </body>
